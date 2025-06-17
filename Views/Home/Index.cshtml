@@ -1,0 +1,25 @@
+﻿@model IEnumerable<HerCalendar.Models.CycleTracker>
+
+@{
+    ViewData["Title"] = "My Cycles";
+}
+
+<h2>My Cycle Tracker</h2>
+
+<p>Welcome User! Here you can view your Menstration Cycles.</p>
+
+<a asp-controller="MyCycles" asp-action="Index" class="btn btn-primary">View My Cycles</a>
+
+<!-- 
+TODO: 
+***********************************************************************************
+Will add a React component here to display cycle data in a more interactive way.
+
+
+<div id="react-root"></div>
+<script src="~/js/bundle.js"></script>
+***********************************************************************************
+-->
+
+
+

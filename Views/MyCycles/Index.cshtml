@@ -1,0 +1,72 @@
+﻿@model IEnumerable<HerCalendar.Models.CycleTracker>
+
+@{
+    ViewData["Title"] = "Index";
+    var avg = ViewData["AverageCycleLength"] as int? ?? 0;
+}
+
+<h2>My Cycle Tracker</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.CycleLength)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.LastPeriodStartDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.NextPeriodStartDate)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.CycleLength) days
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.LastPeriodStartDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.NextPeriodStartDate)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
+
+<br />
+<br />
+
+<h5>Average Cycle Length: @avg days</h5>
+
+<a asp-controller="MyCycles" asp-action="Create" class="btn btn-primary">Create New Cycle</a>
+<br />
+<br />
+<br />
+
+@if (ViewBag.EstimatedNextPeriod != null)
+{
+    <div class="alert alert-info">
+        <strong>Estimated Next Period Date:</strong>
+        @(((DateTime)ViewBag.EstimatedNextPeriod).ToString("MMMM dd, yyyy"))<br />
+
+        <strong>Days Until Next Period:</strong>
+        @ViewBag.DaysUntilNextPeriod days
+    </div>
+}
+
+
+
+
+
+

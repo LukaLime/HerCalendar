@@ -1,0 +1,36 @@
+﻿@model HerCalendar.Models.CycleTracker
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h2>My Cycle Tracker: Details</h2>
+
+
+<div>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.CycleLength)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.CycleLength)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.LastPeriodStartDate)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.LastPeriodStartDate)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.NextPeriodStartDate)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.NextPeriodStartDate)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
+    <a asp-action="Index">Back to List</a>
+</div>
