@@ -1,5 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.AspNetCore.Identity;
 
 namespace HerCalendar.Models
 {
@@ -17,6 +19,11 @@ namespace HerCalendar.Models
         [Display(Name = "Next Period Start Date")]
         [DisplayFormat(DataFormatString = "{0:MM/dd/yyyy}", ApplyFormatInEditMode = false)]
         public DateTime NextPeriodStartDate { get; set; } // Start date of the next period
+
+        public string? UserId { get; set; } // Foreign key to the user
+
+        [ForeignKey("UserId")]
+        public IdentityUser? User { get; set; } // Navigation property to the user
 
     }
 }

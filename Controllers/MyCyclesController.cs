@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using HerCalendar.Data;
 using HerCalendar.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 
 namespace HerCalendar.Controllers
 {
@@ -16,24 +17,32 @@ namespace HerCalendar.Controllers
     public class MyCyclesController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<IdentityUser> _userManager;
 
-        public MyCyclesController(ApplicationDbContext context)
+        public MyCyclesController(ApplicationDbContext context, UserManager<IdentityUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         // GET: MyCycles
         public async Task<IActionResult> Index()
         {
-            var cycles = await _context.CycleTracker.OrderByDescending(c => c.LastPeriodStartDate).ToListAsync();
+            var userId = _userManager.GetUserId(User);
+
+            var existingCycle = await _context.CycleTracker
+                .Where(c => c.UserId == userId)
+                .OrderByDescending(c => c.LastPeriodStartDate)
+                .ToListAsync();
+
             // Average cycle length calculation
-            int averageCycleLength = (int)(cycles.Any() ? cycles.Average(c => c.CycleLength) : 0);
+            int averageCycleLength = (int)(existingCycle.Any() ? existingCycle.Average(c => c.CycleLength) : 0);
 
             // Pass the last entry to the view
             ViewData["AverageCycleLength"] = averageCycleLength;
 
             // Get the most recent entry (if it exists)
-            var lastEntry = cycles.FirstOrDefault();
+            var lastEntry = existingCycle.FirstOrDefault();
             DateTime? estimatedNextPeriod = null;
             int? daysUntilNext = null;
 
@@ -56,7 +65,7 @@ namespace HerCalendar.Controllers
             ViewBag.EstimatedNextPeriod = estimatedNextPeriod;
             ViewBag.DaysUntilNextPeriod = daysUntilNext;
 
-            return View(cycles);
+            return View(existingCycle);
         }
 
         // GET: MyCycles/Details/5
@@ -67,14 +76,16 @@ namespace HerCalendar.Controllers
                 return NotFound();
             }
 
-            var CycleTracker = await _context.CycleTracker
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (CycleTracker == null)
+            var userId = _userManager.GetUserId(User);
+
+            var existingCycle = await _context.CycleTracker
+                .FirstOrDefaultAsync(m => m.Id == id && m.UserId == userId);
+            if (existingCycle == null)
             {
                 return NotFound();
             }
 
-            return View(CycleTracker);
+            return View(existingCycle);
         }
 
         // GET: MyCycles/Create
@@ -90,8 +101,12 @@ namespace HerCalendar.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,LastPeriodStartDate,NextPeriodStartDate")] CycleTracker myCycle)
         {
+            var userId = _userManager.GetUserId(User);
+
             if (ModelState.IsValid)
             {
+                myCycle.UserId = userId;
+
                 // Calculate the cycle length (inclusive of the start date)
                 myCycle.CycleLength = (myCycle.NextPeriodStartDate - myCycle.LastPeriodStartDate).Days + 1;
 
@@ -110,12 +125,12 @@ namespace HerCalendar.Controllers
                 return NotFound();
             }
 
-            var myCycle = await _context.CycleTracker.FindAsync(id);
-            if (myCycle == null)
+            var existingCycle = await _context.CycleTracker.FindAsync(id);
+            if (existingCycle == null)
             {
                 return NotFound();
             }
-            return View(myCycle);
+            return View(existingCycle);
         }
 
         // POST: MyCycles/Edit/5
@@ -125,7 +140,12 @@ namespace HerCalendar.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,LastPeriodStartDate,NextPeriodStartDate")] CycleTracker myCycle)
         {
-            if (id != myCycle.Id)
+            var userId = _userManager.GetUserId(User);
+
+            var existingCycle = await _context.CycleTracker
+                .FirstOrDefaultAsync(c => c.Id == id && c.UserId == userId);
+
+            if (existingCycle == null)
             {
                 return NotFound();
             }
@@ -141,9 +161,12 @@ namespace HerCalendar.Controllers
                 try
                 {
                     // Recalculate the NextPeriodStartDate to match the logic in Create
-                    myCycle.CycleLength = (myCycle.NextPeriodStartDate - myCycle.LastPeriodStartDate).Days + 1;
+                    // Apply updates to the existing tracked entity
+                    existingCycle.LastPeriodStartDate = myCycle.LastPeriodStartDate;
+                    existingCycle.NextPeriodStartDate = myCycle.NextPeriodStartDate;
+                    existingCycle.CycleLength = (myCycle.NextPeriodStartDate - myCycle.LastPeriodStartDate).Days + 1;
 
-                    _context.Update(myCycle);
+                    //_context.Update(myCycle);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
@@ -178,14 +201,14 @@ namespace HerCalendar.Controllers
                 return NotFound();
             }
 
-            var myCycle = await _context.CycleTracker
+            var existingCycle = await _context.CycleTracker
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (myCycle == null)
+            if (existingCycle == null)
             {
                 return NotFound();
             }
 
-            return View(myCycle);
+            return View(existingCycle);
         }
 
         // POST: MyCycles/Delete/5
@@ -193,11 +216,17 @@ namespace HerCalendar.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var myCycle = await _context.CycleTracker.FindAsync(id);
-            if (myCycle != null)
+            var userId = _userManager.GetUserId(User);
+
+            var existingCycle = await _context.CycleTracker
+                .FirstOrDefaultAsync(c => c.Id == id && c.UserId == userId);
+
+            if (existingCycle == null)
             {
-                _context.CycleTracker.Remove(myCycle);
+                return NotFound(); // Either not found or not owned by current user
             }
+
+            _context.CycleTracker.Remove(existingCycle);
 
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
