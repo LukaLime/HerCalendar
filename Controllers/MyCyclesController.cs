@@ -7,9 +7,12 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using HerCalendar.Data;
 using HerCalendar.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace HerCalendar.Controllers
 {
+    // MyCyclesController is responsible for managing the user's menstrual cycle data.
+    [Authorize]
     public class MyCyclesController : Controller
     {
         private readonly ApplicationDbContext _context;

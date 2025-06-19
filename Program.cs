@@ -19,9 +19,17 @@ namespace HerCalendar
 
             builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
+            // Configure Identity services, setting to false disables account confirmation requirements (will set up later with a SMTP provider)
             builder.Services.AddDefaultIdentity<IdentityUser>(options =>
-                options.SignIn.RequireConfirmedAccount = true)
+                options.SignIn.RequireConfirmedAccount = false)
                 .AddEntityFrameworkStores<ApplicationDbContext>();
+
+            // Login path configuration
+            builder.Services.ConfigureApplicationCookie(options =>
+            {
+                options.LoginPath = "/Identity/Account/Login";
+                options.AccessDeniedPath = "/Identity/Account/AccessDenied"; // Optional: where to redirect if user lacks access
+            });
 
             builder.Services.AddControllersWithViews();
 
@@ -40,6 +48,8 @@ namespace HerCalendar
 
             app.UseHttpsRedirection();
             app.UseRouting();
+
+            app.UseAuthentication();
 
             app.UseAuthorization();
 

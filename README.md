@@ -23,6 +23,8 @@ To Do Tasks:
 	4. Add Admin account, and User account options
 	5. Users are able to subscribe through email, users will get email reminders when an upcoming Cycle is coming up
 	6. Update UI using React
+	7. Add SMTP provider to provide email confirmation when registering a new account
+	8. Each user should have there own account with there own cycle tracker
 
 Completed Tasks:
 	1. Fix Days to next period, and estimated period so it estimates from the last period date using the average cycle length
@@ -30,3 +32,4 @@ Completed Tasks:
 	3. Cycle start days, and next period start days should count towards cycle length
 	4. When editing, the Next period start date is not needed
 	5. When editing, the cycle length can not be changed and is set to 28
+	6. Set up a Login account authorization for cycle tracker
