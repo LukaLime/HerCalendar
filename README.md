@@ -23,11 +23,11 @@ To Do Tasks:
 	4. Users are able to subscribe through email, users will get email reminders when an upcoming Cycle is coming up
 	5. Update UI using React
 	6. Add SMTP provider to provide email confirmation when registering a new account
-	8. Enforce that UserId is always always points to a valid user in AspNetUsers
+	7. Enforce that UserId is always always points to a valid user in AspNetUsers
 
 Completed Tasks:
 	1. Fix Days to next period, and estimated period so it estimates from the last period date using the average cycle length
-	1. Add Period Start Date and End Date instead of inputing Cycle Length
+	2. Add Period Start Date and End Date instead of inputing Cycle Length
 	3. Cycle start days, and next period start days should count towards cycle length
 	4. When editing, the Next period start date is not needed
 	5. When editing, the cycle length can not be changed and is set to 28
