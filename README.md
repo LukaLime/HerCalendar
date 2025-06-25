@@ -25,6 +25,7 @@ To Do Tasks:
 	6. Update UI using React
 	7. Add SMTP provider to provide email confirmation when registering a new account
 	8. Each user should have there own account with there own cycle tracker
+	9. Enforce that UserId is always set
 
 Completed Tasks:
 	1. Fix Days to next period, and estimated period so it estimates from the last period date using the average cycle length
@@ -33,3 +34,4 @@ Completed Tasks:
 	4. When editing, the Next period start date is not needed
 	5. When editing, the cycle length can not be changed and is set to 28
 	6. Set up a Login account authorization for cycle tracker
+	7. Each user has there own account with there own cycle tracker

@@ -1,4 +1,4 @@
-using HerCalendar.Data;
+﻿using HerCalendar.Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -6,9 +6,12 @@ namespace HerCalendar
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+
+            // User Secrets
+            builder.Configuration.AddUserSecrets<Program>();
 
             // Add services to the container.
             var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
@@ -19,10 +22,13 @@ namespace HerCalendar
 
             builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-            // Configure Identity services, setting to false disables account confirmation requirements (will set up later with a SMTP provider)
+            // Configure Identity services, setting to false disables account confirmation requirements(will set up later with a SMTP provider)
+            // Added Identity services with roles support (eg. Admin, User)
             builder.Services.AddDefaultIdentity<IdentityUser>(options =>
                 options.SignIn.RequireConfirmedAccount = false)
+                .AddRoles<IdentityRole>() // Add this
                 .AddEntityFrameworkStores<ApplicationDbContext>();
+
 
             // Login path configuration
             builder.Services.ConfigureApplicationCookie(options =>
@@ -63,6 +69,84 @@ namespace HerCalendar
             app.MapRazorPages()
                .WithStaticAssets();
 
+            using (var scope = app.Services.CreateScope())
+            {
+                var services = scope.ServiceProvider;
+                var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
+                var userManager = services.GetRequiredService<UserManager<IdentityUser>>();
+
+                try
+                { 
+                    // Admin Login Setup
+                    string adminEmail = builder.Configuration["AdminUser:Email"]!;
+                    string adminPassword = builder.Configuration["AdminUser:Password"]!;
+
+                    if (string.IsNullOrEmpty(adminEmail) || string.IsNullOrEmpty(adminPassword))
+                    {
+                        throw new Exception("⚠️ Admin email or password not configured.");
+                    }
+
+                    // Create Admin role if it doesn't exist
+                    if (!await roleManager.RoleExistsAsync("Admin"))
+                    {
+                        Console.WriteLine("Creating 'Admin' role...");
+                        await roleManager.CreateAsync(new IdentityRole("Admin"));
+                    }
+
+                    var adminUser = await userManager.FindByEmailAsync(adminEmail);
+
+                    /*
+                     * Using this commented code, you can delete the admin user if it already exists (if admin login is lost, need to delete and recreate).
+                    if (adminUser != null)
+                    {
+                        Console.WriteLine("Admin user already exists. Deleting to recreate...");
+                        await userManager.DeleteAsync(adminUser);
+                    }
+                    */
+
+                    if (adminUser == null)
+                    {
+                        Console.WriteLine("Admin user not found. Creating...");
+                        adminUser = new IdentityUser
+                        {
+                            UserName = adminEmail,
+                            Email = adminEmail,
+                            EmailConfirmed = true
+                        };
+
+                        var result = await userManager.CreateAsync(adminUser, adminPassword);
+                        if (result.Succeeded)
+                        {
+                            Console.WriteLine("✅ Admin user created.");
+                            await userManager.AddToRoleAsync(adminUser, "Admin");
+                            Console.WriteLine("✅ Admin role assigned.");
+                        }
+                        else
+                        {
+                            Console.WriteLine("❌ Failed to create admin user:");
+                            foreach (var error in result.Errors)
+                            {
+                                Console.WriteLine($" - {error.Description}");
+                            }
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine("Admin user already exists.");
+                        // Ensure user has Admin role
+                        if (!await userManager.IsInRoleAsync(adminUser, "Admin"))
+                        {
+                            await userManager.AddToRoleAsync(adminUser, "Admin");
+                            Console.WriteLine("✅ Admin role assigned to existing user.");
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("❌ Error during admin user setup:");
+                    Console.WriteLine($"   {ex.Message}");
+                }
+            }
             app.Run();
         }
     }
