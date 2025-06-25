@@ -20,12 +20,10 @@ To Do Tasks:
 	1. Add Ovulation periods
 	2. Add Cycle Chart
 	3. Add AI chatbox to analyze the users current tracked cycles, and any other questions the user may have
-	4. Add Admin account, and User account options
-	5. Users are able to subscribe through email, users will get email reminders when an upcoming Cycle is coming up
-	6. Update UI using React
-	7. Add SMTP provider to provide email confirmation when registering a new account
-	8. Each user should have there own account with there own cycle tracker
-	9. Enforce that UserId is always set
+	4. Users are able to subscribe through email, users will get email reminders when an upcoming Cycle is coming up
+	5. Update UI using React
+	6. Add SMTP provider to provide email confirmation when registering a new account
+	8. Enforce that UserId is always always points to a valid user in AspNetUsers
 
 Completed Tasks:
 	1. Fix Days to next period, and estimated period so it estimates from the last period date using the average cycle length
@@ -35,3 +33,5 @@ Completed Tasks:
 	5. When editing, the cycle length can not be changed and is set to 28
 	6. Set up a Login account authorization for cycle tracker
 	7. Each user has there own account with there own cycle tracker
+	8. Add Admin account, and User account options
+	9. Each user should have there own account with there own cycle tracker
