@@ -1,4 +1,4 @@
-# Architecture
+﻿# Architecture
 
 This document outlines the architecture for a web application that follows the Model-View-Controller (MVC) design pattern, using JavaScript, HTML/CSS, Node.js, and SQLite.
 
@@ -68,6 +68,53 @@ The application consists of three main components: the Model, the View, and the 
 	+---Identity (if using ASP.NET Identity for authentication)
 
 ```
+
+## Workflow Diagram
++-----------------------+
+|       Model           |    <-- C# Classes (Entity Framework)
+|  (Data & Business     |
+|  Logic Layer)         |
++-----------------------+
+        ↑
+        | Data retrieved/stored
+        |
++-----------------------+
+|      Controller        |    <-- ASP.NET MVC Controller (C#)
+|  Handles HTTP requests |
+|  and orchestrates      |
+|  business logic, calls |
+|  Model, returns Views  |
++-----------------------+
+        ↑
+        | Returns views (HTML + Bootstrap + Razor)
+        |
++-----------------------+
+|         View           |    <-- Bootstrap + Razor CSHTML (HTML, CSS)
+|  Displays UI to user   |
+|  Renders data passed   |
+|  from Controller       |
++-----------------------+
+
+User Browser
+    ↓
+ HTTP Request (e.g. GET /MyCycles)
+    ↓
+ASP.NET Controller receives request:
+    - Calls Model methods to get cycle data (with retry logic)
+    - If success, renders Bootstrap-styled partial view (Razor)
+    - If fail, returns 503 error
+    ↓
+View (Bootstrap + Razor) rendered as HTML partial
+    ↓
+JavaScript fetches partial view asynchronously:
+    - Shows Loader UI during fetch & retries
+    - Updates page dynamically with returned data
+    - Handles errors & retry button display
+
+User interacts with UI (Bootstrap styling):
+    - Navigates pages, views cycle data
+    - Sees loading status & error messages during fetch
+
 
 ## Model
 
