@@ -1,14 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using HerCalendar.Data;
+﻿using HerCalendar.Data;
 using HerCalendar.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace HerCalendar.Controllers
 {
@@ -18,15 +19,52 @@ namespace HerCalendar.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly UserManager<IdentityUser> _userManager;
+        private readonly ILogger<MyCyclesController> _logger;
+        private readonly IWebHostEnvironment _env; 
 
-        public MyCyclesController(ApplicationDbContext context, UserManager<IdentityUser> userManager)
+        public MyCyclesController(ApplicationDbContext context, UserManager<IdentityUser> userManager, ILogger<MyCyclesController> logger, IWebHostEnvironment env)
         {
             _context = context;
             _userManager = userManager;
+            _logger = logger;
+            _env = env; 
         }
 
-        // GET: MyCycles
-        public async Task<IActionResult> Index()
+        private async Task<T?> RetryDbCallAsync<T>(Func<Task<T>> dbOperation, int retries = 3, int delayMs = 1000)
+        {
+            if (!_env.IsProduction())
+            {
+                // Skip retry logic in Development mode
+                _logger.LogInformation("Skipping retry logic (non-production)");
+                return await dbOperation();
+            }
+
+            for (int attempt = 1; attempt <= retries; attempt++)
+            {
+                try
+                {
+                    _logger.LogInformation("DB call attempt {Attempt} of {Retries}", attempt, retries);
+                    return await dbOperation();
+                }
+                catch (SqlException ex) when (attempt < retries)
+                {
+                    _logger.LogWarning(ex, "DB call failed on attempt {Attempt} with SQL error {ErrorNumber}. Retrying...", attempt, ex.Number);
+                    await Task.Delay(delayMs);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, "Unexpected error during DB call on attempt {Attempt}", attempt);
+                    throw; // Rethrow unexpected exceptions
+                }
+            }
+            _logger.LogError("DB call failed after {Retries} attempts", retries);
+
+            // If all retries fail, return default value (null for reference types, 0 for int, etc.)
+            return default;
+        }
+
+
+        private async Task<(List<CycleTracker> Cycles, int Avg, DateTime? EstDate, int? DaysUntil)> GetCycleDataAsync()
         {
             var userId = _userManager.GetUserId(User);
 
@@ -35,38 +73,85 @@ namespace HerCalendar.Controllers
                 .OrderByDescending(c => c.LastPeriodStartDate)
                 .ToListAsync();
 
-            // Average cycle length calculation
             int averageCycleLength = (int)(existingCycle.Any() ? existingCycle.Average(c => c.CycleLength) : 0);
-
-            // Pass the last entry to the view
-            ViewData["AverageCycleLength"] = averageCycleLength;
-
-            // Get the most recent entry (if it exists)
             var lastEntry = existingCycle.FirstOrDefault();
+
             DateTime? estimatedNextPeriod = null;
             int? daysUntilNext = null;
 
-
             if (lastEntry != null && averageCycleLength > 0)
             {
-                // Start from the last known period date
                 DateTime nextPeriod = lastEntry.NextPeriodStartDate;
-
-                // Keep adding the cycle length until it's in the future
                 while (nextPeriod <= DateTime.Today)
                 {
                     nextPeriod = nextPeriod.AddDays(averageCycleLength - 1);
                 }
+
                 estimatedNextPeriod = nextPeriod;
                 daysUntilNext = (estimatedNextPeriod.Value - DateTime.Today).Days;
             }
 
-            // Use ViewBag or a view model (simpler to start with ViewBag)
-            ViewBag.EstimatedNextPeriod = estimatedNextPeriod;
-            ViewBag.DaysUntilNextPeriod = daysUntilNext;
-
-            return View(existingCycle);
+            return (existingCycle, averageCycleLength, estimatedNextPeriod, daysUntilNext);
         }
+
+
+        // GET: MyCycles
+        public async Task<IActionResult> Index()
+        {
+            //await Task.Delay(10000); // for testing only
+            var (cycles, avg, estDate, daysUntil) = await GetCycleDataAsync();
+
+            ViewData["AverageCycleLength"] = avg;
+            ViewBag.EstimatedNextPeriod = estDate;
+            ViewBag.DaysUntilNextPeriod = daysUntil;
+
+            return View(cycles);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> IndexPartial()
+        {
+            _logger.LogInformation("IndexPartial called");
+           //await Task.Delay(10000); // simulate delay
+
+            if(_env.IsProduction())
+            {
+                var result = await RetryDbCallAsync(async () =>
+                {
+                    var (cycles, avg, estDate, daysUntil) = await GetCycleDataAsync();
+
+                    ViewData["AverageCycleLength"] = avg;
+                    ViewBag.EstimatedNextPeriod = estDate;
+                    ViewBag.DaysUntilNextPeriod = daysUntil;
+
+                    _logger.LogInformation("DB call successful");
+                    return PartialView("Index", cycles);
+                });
+
+                if (result == null)
+                {
+                    _logger.LogWarning("Returning 503 due to repeated DB failures");
+                    return StatusCode(503, "Database unavailable after multiple attempts.");
+                }
+
+                return result;
+            } else
+            {
+                // In dev, skip retry logic for faster dev/testing
+                _logger.LogInformation("Skipping retry logic (non-production)");
+
+                var (cycles, avg, estDate, daysUntil) = await GetCycleDataAsync();
+
+                ViewData["AverageCycleLength"] = avg;
+                ViewBag.EstimatedNextPeriod = estDate;
+                ViewBag.DaysUntilNextPeriod = daysUntil;
+
+                return PartialView("Index", cycles);
+            }
+
+            //return StatusCode(503); // For testing purposes, return a 503 Service Unavailable status code
+        }
+
 
         // GET: MyCycles/Details/5
         public async Task<IActionResult> Details(int? id)

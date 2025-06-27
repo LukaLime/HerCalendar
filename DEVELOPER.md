@@ -1,4 +1,4 @@
-# Developer Guide � HerCalendar
+﻿# Developer Guide – HerCalendar
 
 ## Software Used
 
@@ -43,15 +43,61 @@ which allows object-relational mapping without writing raw SQL. Styling is handl
  The application uses SQLite for data storage.
 
  -> The database file (e.g., HerCalendar.db) is located in the project root or Data folder.
- -> Data is accessed and manipulated using EF Core�s DbContext (ApplicationDbContext.cs).
+ -> Data is accessed and manipulated using EF Core’s DbContext (ApplicationDbContext.cs).
  -> Use SQLiteStudio or similar tools to view and manage data manually.
 
 ## Entity Framework Core (EF Core)
 
  EF Core is used for data access and migration management. You can use these commands to manage the database:
 
- -> dotnet ef migrations add <MigrationName> � Create a migration
- -> dotnet ef database update � Apply migrations to update the database
+ -> dotnet ef migrations add <MigrationName> – Create a migration
+ -> dotnet ef database update – Apply migrations to update the database
+
+ ## ERD Diagram
+
+ +---------------------+           +---------------------------+
+|     AspNetUsers     |<--------->|      CycleTracker         |
+|---------------------|    1   *  |---------------------------|
+| Id (PK)             |-----------| Id (PK)                   |
+| UserName            |           | CycleLength               |
+| Email               |           | LastPeriodStartDate       |
+| EmailConfirmed      |           | NextPeriodStartDate       |
+| ...                 |           | UserId (FK -> AspNetUsers)|
++---------------------+           +---------------------------+
+
+                ↑
+                |
+                | Role-based access control
+                |
+        +---------------------+
+        |   AspNetRoles       |
+        |---------------------|
+        | Id (PK)             |
+        | Name                |
+        +---------------------+
+
+
+🧩 Tables Involved
+🔹 AspNetUsers (from ASP.NET Core Identity)
+Primary Key: Id (string)
+
+Other fields: Email, UserName, EmailConfirmed, etc.
+
+🔹 CycleTracker
+Primary Key: Id (int)
+
+Foreign Key: UserId → AspNetUsers.Id
+
+Fields:
+
+CycleLength (int)
+
+LastPeriodStartDate (DateTime)
+
+NextPeriodStartDate (DateTime)
+
+🔹 AspNetRoles / AspNetUserRoles (handled by Identity)
+You use the "Admin" role via [Authorize(Roles = "Admin")]
 
 ## Contributing
 
