@@ -1,0 +1,43 @@
++---------------------+           +---------------------------+
+|     AspNetUsers     |<--------->|      CycleTracker         |
+|---------------------|    1   *  |---------------------------|
+| Id (PK)             |-----------| Id (PK)                   |
+| UserName            |           | CycleLength               |
+| Email               |           | LastPeriodStartDate       |
+| EmailConfirmed      |           | NextPeriodStartDate       |
+| ...                 |           | UserId (FK -> AspNetUsers)|
++---------------------+           +---------------------------+
+
+                ↑
+                |
+                | Role-based access control
+                |
+        +---------------------+
+        |   AspNetRoles       |
+        |---------------------|
+        | Id (PK)             |
+        | Name                |
+        +---------------------+
+
+
+🧩 Tables Involved
+🔹 AspNetUsers (from ASP.NET Core Identity)
+Primary Key: Id (string)
+
+Other fields: Email, UserName, EmailConfirmed, etc.
+
+🔹 CycleTracker
+Primary Key: Id (int)
+
+Foreign Key: UserId → AspNetUsers.Id
+
+Fields:
+
+CycleLength (int)
+
+LastPeriodStartDate (DateTime)
+
+NextPeriodStartDate (DateTime)
+
+🔹 AspNetRoles / AspNetUserRoles (handled by Identity)
+You use the "Admin" role via [Authorize(Roles = "Admin")]
