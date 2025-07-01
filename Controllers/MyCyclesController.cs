@@ -20,25 +20,16 @@ namespace HerCalendar.Controllers
         private readonly ApplicationDbContext _context;
         private readonly UserManager<IdentityUser> _userManager;
         private readonly ILogger<MyCyclesController> _logger;
-        private readonly IWebHostEnvironment _env; 
 
-        public MyCyclesController(ApplicationDbContext context, UserManager<IdentityUser> userManager, ILogger<MyCyclesController> logger, IWebHostEnvironment env)
+        public MyCyclesController(ApplicationDbContext context, UserManager<IdentityUser> userManager, ILogger<MyCyclesController> logger)
         {
             _context = context;
             _userManager = userManager;
             _logger = logger;
-            _env = env; 
         }
 
         private async Task<T?> RetryDbCallAsync<T>(Func<Task<T>> dbOperation, int retries = 3, int delayMs = 1000)
         {
-            if (!_env.IsProduction())
-            {
-                // Skip retry logic in Development mode
-                _logger.LogInformation("Skipping retry logic (non-production)");
-                return await dbOperation();
-            }
-
             for (int attempt = 1; attempt <= retries; attempt++)
             {
                 try
@@ -49,12 +40,7 @@ namespace HerCalendar.Controllers
                 catch (SqlException ex) when (attempt < retries)
                 {
                     _logger.LogWarning(ex, "DB call failed on attempt {Attempt} with SQL error {ErrorNumber}. Retrying...", attempt, ex.Number);
-
-                    // Apply exponential backoff with a cap of 10 seconds
-                    int backoffDelay = Math.Min(delayMs * (int)Math.Pow(2, attempt - 1), 10000);
-                    _logger.LogInformation("Waiting {Delay} ms before next retry...", backoffDelay);
-
-                    await Task.Delay(backoffDelay);
+                    await Task.Delay(delayMs);
                 }
                 catch (Exception ex)
                 {
@@ -103,7 +89,7 @@ namespace HerCalendar.Controllers
         // GET: MyCycles
         public async Task<IActionResult> Index()
         {
-            //await Task.Delay(10000); // for testing only
+            await Task.Delay(10000); // for testing only
             var (cycles, avg, estDate, daysUntil) = await GetCycleDataAsync();
 
             ViewData["AverageCycleLength"] = avg;
@@ -117,43 +103,26 @@ namespace HerCalendar.Controllers
         public async Task<IActionResult> IndexPartial()
         {
             _logger.LogInformation("IndexPartial called");
-           //await Task.Delay(10000); // simulate delay
-
-            if(_env.IsProduction())
+            await Task.Delay(10000); // simulate delay
+            var result = await RetryDbCallAsync(async () =>
             {
-                var result = await RetryDbCallAsync(async () =>
-                {
-                    var (cycles, avg, estDate, daysUntil) = await GetCycleDataAsync();
-
-                    ViewData["AverageCycleLength"] = avg;
-                    ViewBag.EstimatedNextPeriod = estDate;
-                    ViewBag.DaysUntilNextPeriod = daysUntil;
-
-                    _logger.LogInformation("DB call successful");
-                    return PartialView("Index", cycles);
-                });
-
-                if (result == null)
-                {
-                    _logger.LogWarning("Returning 503 due to repeated DB failures");
-                    return StatusCode(503, "Database unavailable after multiple attempts.");
-                }
-
-                return result;
-            } else
-            {
-                // In dev, skip retry logic for faster dev/testing
-                _logger.LogInformation("Skipping retry logic (non-production)");
-
                 var (cycles, avg, estDate, daysUntil) = await GetCycleDataAsync();
 
                 ViewData["AverageCycleLength"] = avg;
                 ViewBag.EstimatedNextPeriod = estDate;
                 ViewBag.DaysUntilNextPeriod = daysUntil;
 
+                _logger.LogInformation("DB call successful");
                 return PartialView("Index", cycles);
+            });
+
+            if (result == null)
+            {
+                _logger.LogWarning("Returning 503 due to repeated DB failures");
+                return StatusCode(503, "Database unavailable after multiple attempts.");
             }
 
+            return result;
             //return StatusCode(503); // For testing purposes, return a 503 Service Unavailable status code
         }
 
