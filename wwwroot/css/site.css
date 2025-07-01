@@ -29,14 +29,3 @@ body {
 .form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
   text-align: start;
 }
-
-#page-loader {
-    opacity: 0;
-    transition: opacity 0.5s ease;
-    pointer-events: none;
-}
-
-#page-loader.visible {
-    opacity: 1;
-    pointer-events: all;
-}

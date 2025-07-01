@@ -18,17 +18,9 @@ async function fetchWithRetry(url, retries = 2, delay = 3000) {
     const statusText = document.getElementById('loader-status');
     const retryBtn = document.getElementById('retry-btn-container');
 
-    //loader.style.display = "block";
+    loader.style.display = "block";
     retryBtn.style.display = "none";
     statusText.innerText = "Fetching your data ⏳";
-
-    let loaderVisible = false;
-
-    // Show loader after a small delay (e.g., 300ms), and only if still loading
-    const showLoaderTimeout = setTimeout(() => {
-        loader.classList.add('visible');
-        loaderVisible = true;
-    }, 300);
 
     for (let attempt = 1; attempt <= retries; attempt++) {
         try {
@@ -53,14 +45,7 @@ async function fetchWithRetry(url, retries = 2, delay = 3000) {
                 document.querySelector("main").innerHTML = newMain.innerHTML;
             }
 
-            //loader.style.display = "none";
-            // Then inside successful fetch or final catch, always clear it
-            clearTimeout(showLoaderTimeout);
-
-            if (loaderVisible) {
-                loader.classList.remove('visible');
-            }
-
+            loader.style.display = "none";
             return;
 
         } catch (err) {
@@ -71,8 +56,6 @@ async function fetchWithRetry(url, retries = 2, delay = 3000) {
                 statusText.innerText = `🔄 Attempt ${attempt}/${retries}${dots} - Waking the server`;
                 await new Promise(res => setTimeout(res, delay));
             } else {
-                clearTimeout(showLoaderTimeout);
-                loader.classList.add('visible');
                 statusText.innerText = "❌ We couldn’t reach the server after several tries. Please refresh or try again.";
                 retryBtn.style.display = "block";
             }

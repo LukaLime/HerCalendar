@@ -24,6 +24,7 @@ To Do Tasks:
 	5. Update UI using React
 	6. Add SMTP provider to provide email confirmation when registering a new account
 	7. Enforce that UserId is always always points to a valid user in AspNetUsers
+	8. Create a delay for loading page
 
 Completed Tasks:
 	1. Fix Days to next period, and estimated period so it estimates from the last period date using the average cycle length
