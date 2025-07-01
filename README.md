@@ -25,6 +25,14 @@ To Do Tasks:
 	6. Add SMTP provider to provide email confirmation when registering a new account
 	7. Enforce that UserId is always always points to a valid user in AspNetUsers
 	8. Create a delay for loading page
+	9. Add email confirmation when registering a new account
+	10. Add a password reset feature
+	11. Email news letter for users to subscribe to
+	12. Implement donations (Patreon, or Buy Me a Coffee)
+	13. Add a blog section
+	14. Buy a domain name
+	15. Add Google Analytics to track user activity
+	16. Add Google AdSense to monetize the website
 
 Completed Tasks:
 	1. Fix Days to next period, and estimated period so it estimates from the last period date using the average cycle length
