@@ -49,7 +49,12 @@ namespace HerCalendar.Controllers
                 catch (SqlException ex) when (attempt < retries)
                 {
                     _logger.LogWarning(ex, "DB call failed on attempt {Attempt} with SQL error {ErrorNumber}. Retrying...", attempt, ex.Number);
-                    await Task.Delay(delayMs);
+
+                    // Apply exponential backoff with a cap of 10 seconds
+                    int backoffDelay = Math.Min(delayMs * (int)Math.Pow(2, attempt - 1), 10000);
+                    _logger.LogInformation("Waiting {Delay} ms before next retry...", backoffDelay);
+
+                    await Task.Delay(backoffDelay);
                 }
                 catch (Exception ex)
                 {
