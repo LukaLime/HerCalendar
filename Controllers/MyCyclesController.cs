@@ -89,7 +89,7 @@ namespace HerCalendar.Controllers
         // GET: MyCycles
         public async Task<IActionResult> Index()
         {
-            await Task.Delay(10000); // for testing only
+            //await Task.Delay(10000); // for testing only
             var (cycles, avg, estDate, daysUntil) = await GetCycleDataAsync();
 
             ViewData["AverageCycleLength"] = avg;
@@ -103,7 +103,7 @@ namespace HerCalendar.Controllers
         public async Task<IActionResult> IndexPartial()
         {
             _logger.LogInformation("IndexPartial called");
-            await Task.Delay(10000); // simulate delay
+            //await Task.Delay(10000); // simulate delay
             var result = await RetryDbCallAsync(async () =>
             {
                 var (cycles, avg, estDate, daysUntil) = await GetCycleDataAsync();
