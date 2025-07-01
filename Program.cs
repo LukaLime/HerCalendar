@@ -18,7 +18,11 @@ namespace HerCalendar
                 ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlServer(connectionString));
+                options.UseSqlServer(connectionString,
+                sqlOptions => sqlOptions.EnableRetryOnFailure( //  EF Core retry failed DB calls (e.g., 5 times with 10s max delay)
+                    maxRetryCount: 5,
+                    maxRetryDelay: TimeSpan.FromSeconds(10),
+                    errorNumbersToAdd: null)));
 
             builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
