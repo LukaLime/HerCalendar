@@ -80,4 +80,23 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+
+        <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const loginForm = document.getElementById('account');
+            if (loginForm) {
+                loginForm.addEventListener('submit', () => {
+                    const loader = document.getElementById('page-loader');
+                    const statusText = document.getElementById('loader-status');
+                    const retryBtn = document.getElementById('retry-btn-container');
+
+                    if (loader && statusText && retryBtn) {
+                        statusText.innerText = "☕ The server's brewing your login... please wait ⏳";
+                        retryBtn.style.display = "none";
+                        loader.style.display = "block";
+                    }
+                });
+            }
+        });
+    </script>
 }

@@ -24,9 +24,9 @@ To Do Tasks:
 	5. Update UI using React
 	6. Add SMTP provider to provide email confirmation when registering a new account
 	7. Enforce that UserId is always always points to a valid user in AspNetUsers
-	8. Create a delay for loading page
+	8. Create a smooth transition for every loading page
 	9. Add email confirmation when registering a new account
-	10. Add a password reset feature
+	10. 
 	11. Email news letter for users to subscribe to
 	12. Implement donations (Patreon, or Buy Me a Coffee)
 	13. Add a blog section
