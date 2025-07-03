@@ -18,9 +18,9 @@ async function fetchWithRetry(url, retries = 2, delay = 3000) {
     const statusText = document.getElementById('loader-status');
     const retryBtn = document.getElementById('retry-btn-container');
 
-    loader.style.display = "block";
-    retryBtn.style.display = "none";
-    statusText.innerText = "Fetching your data ⏳";
+    //loader.style.display = "block";
+    //retryBtn.style.display = "none";
+    //statusText.innerText = "Fetching your data ⏳";
 
     for (let attempt = 1; attempt <= retries; attempt++) {
         try {
