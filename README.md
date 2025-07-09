@@ -22,7 +22,7 @@ To Do Tasks:
 	3. Add AI chatbox to analyze the users current tracked cycles, and any other questions the user may have
 	4. Users are able to subscribe through email, users will get email reminders when an upcoming Cycle is coming up
 	5. Update UI using React
-	6. Add SMTP provider to provide email confirmation when registering a new account
+    6. Add an external login provider (Google, Facebook, etc.)
 	7. Enforce that UserId is always always points to a valid user in AspNetUsers
 	8. Create a smooth transition for every loading page
 	9. Add email confirmation when registering a new account

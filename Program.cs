@@ -1,5 +1,7 @@
 using HerCalendar.Data;
+using HerCalendar.Services;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 
 namespace HerCalendar
@@ -26,13 +28,17 @@ namespace HerCalendar
 
             builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-            // Configure Identity services, setting to false disables account confirmation requirements(will set up later with a SMTP provider)
-            // Added Identity services with roles support (eg. Admin, User)
+            // Identity services configuration
             builder.Services.AddDefaultIdentity<IdentityUser>(options =>
-                options.SignIn.RequireConfirmedAccount = false)
-                .AddRoles<IdentityRole>() // Add this
+                {
+                    options.SignIn.RequireConfirmedAccount = false; // Require email confirmation for account activation
+                    options.User.RequireUniqueEmail = true; // Ensure unique email addresses for users
+                })
+                .AddRoles<IdentityRole>() // Roles support (eg. Admin, User)
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
+            // Custom email sender for development (console output test)
+            //builder.Services.AddSingleton<IEmailSender, ConsoleEmailSender>();
 
             // Login path configuration
             builder.Services.ConfigureApplicationCookie(options =>
@@ -151,6 +157,11 @@ namespace HerCalendar
                     Console.WriteLine($"   {ex.Message}");
                 }
             }
+            // EMAIL SENDER TESTING (uncomment to test email sending)
+            //using var test = app.Services.CreateScope();
+            //var emailSender = test.ServiceProvider.GetRequiredService<IEmailSender>();
+            //await emailSender.SendEmailAsync("test@example.com", "Test Subject", "Hello from test!");
+
             app.Run();
         }
     }
