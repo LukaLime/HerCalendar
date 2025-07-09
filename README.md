@@ -26,7 +26,7 @@ To Do Tasks:
 	7. Enforce that UserId is always always points to a valid user in AspNetUsers
 	8. Create a smooth transition for every loading page
 	9. Add email confirmation when registering a new account
-	10. 
+	10. Implement Power BI dashboard for visualizing cycle data and trends
 	11. Email news letter for users to subscribe to
 	12. Implement donations (Patreon, or Buy Me a Coffee)
 	13. Add a blog section
