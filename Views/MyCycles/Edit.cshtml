@@ -4,35 +4,38 @@
     ViewData["Title"] = "Edit";
 }
 
-<h2>My Cycle Tracker: Edit</h2>
-
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="Id" />
-            <div class="form-group">
-                <label asp-for="LastPeriodStartDate" class="control-label"></label>
-                <input name="LastPeriodStartDate" class="form-control" type="date" value="@Model.LastPeriodStartDate.ToString("yyyy-MM-dd")" />
-                <span asp-validation-for="LastPeriodStartDate" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="NextPeriodStartDate" class="control-label"></label>
-                <input name="NextPeriodStartDate" class="form-control" type="date" value="@Model.NextPeriodStartDate.ToString("yyyy-MM-dd")" />
-                <span asp-validation-for="NextPeriodStartDate" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Save Changes" class="btn btn-primary" />
-            </div>
-        </form>
+<h1 class="mt-4 mb-3 pb-2 text-center">🩸 Menstrual Cycle Edit 🩸</h1>
+<div class="d-flex justify-content-center mt-5">
+    <div class="card border-light p-4" style="max-width: 500px; width: 100%;">
+        <div class="card-body px-0">
+            <form asp-action="Edit">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <input type="hidden" asp-for="Id" />
+                <div class="form-floating mb-3">
+                    <input name="LastPeriodStartDate" class="form-control" for="inputLarge" type="date" value="@Model.LastPeriodStartDate.ToString("yyyy-MM-dd")" />
+                    <label asp-for="LastPeriodStartDate">Last Period Start Date</label>
+                    <span asp-validation-for="LastPeriodStartDate" class="text-danger"></span>
+                </div>
+                <br />
+                <div class="form-floating mb-3 px-0">
+                    <input name="NextPeriodStartDate" class="form-control" for="inputLarge" type="date" value="@Model.NextPeriodStartDate.ToString("yyyy-MM-dd")" />
+                    <label asp-for="NextPeriodStartDate">Next Period Start Date</label>
+                    <span asp-validation-for="NextPeriodStartDate" class="text-danger"></span>
+                </div>
+            </form>
+        </div>
+        <!-- Footer with Save and Back buttons -->
+        <div class="card-footer d-flex justify-content-between align-items-center px-0">
+            <button type="submit" class="btn btn-secondary">Save Changes</button>
+            <a asp-action="Index" class="btn btn-outline-dark">Back to List</a>
+        </div>
     </div>
 </div>
-
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
+<br />
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }
+
+
+<!-- I want to put the inputs into a bootstrap card, and make in centered -->

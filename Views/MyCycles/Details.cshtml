@@ -4,33 +4,27 @@
     ViewData["Title"] = "Details";
 }
 
-<h2>My Cycle Tracker: Details</h2>
+<h1 class="mt-4 mb-3 pb-2 text-center">🩸 Menstrual Cycle Details 🩸</h1>
 
 
-<div>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.CycleLength)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.CycleLength)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.LastPeriodStartDate)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.LastPeriodStartDate)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.NextPeriodStartDate)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.NextPeriodStartDate)
-        </dd>
-    </dl>
-</div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+<div class="d-flex justify-content-center mt-5">
+    <div class="card border-light p-4" style="max-width: 500px; width: 100%">
+        <div class="card-body">
+            <dl class="row">
+                <dt class="col-sm-7 text-start fs-5">Cycle Length:</dt>
+                <dd class="col-sm-5 fs-5">@Model.CycleLength days</dd>
+
+                <dt class="col-sm-7 text-start fs-5">Last Period Start:</dt>
+                <dd class="col-sm-5 fs-5">@Model.LastPeriodStartDate.ToString("MMMM dd, yyyy")</dd>
+
+                <dt class="col-sm-7 text-start fs-5">Next Period Start:</dt>
+                <dd class="col-sm-5 fs-5">@Model.NextPeriodStartDate.ToString("MMMM dd, yyyy")</dd>
+            </dl>
+            <!-- Footer Buttons -->
+            <div class="card-footer d-flex justify-content-between align-items-center px-0">
+                <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-secondary">Edit</a>
+                <a asp-action="Index" class="btn btn-outline-dark">Back to List</a>
+            </div>
+        </div>
+    </div>
 </div>
