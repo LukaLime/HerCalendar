@@ -5,23 +5,72 @@
 }
 
 <main>
-    <h1 class="mt-4">Homepage</h1>
-    <hr />
-    <p>Welcome User! Here you can view your Menstration Cycles.</p>
 
-    <a asp-controller="MyCycles" asp-action="Index" class="btn btn-secondary">View My Cycles</a>
+    <!-- 🌟 Hero Section -->
+    <section class="d-flex flex-column text-center background-calm" style="height: 100vh;">
+        <div class="container mt-4">
+            <h1 class="display-3 fw-bold animate__animated animate__fadeInDown">Welcome to HerCalendar 💖</h1>
+            <p class="lead fs-4 mb-5">Track your menstrual health with clarity, confidence, and a touch of calm.</p>
+            <a asp-controller="MyCycles" asp-action="Index" class="btn btn-lg btn-secondary">View My Cycles</a>
+            <span class="animated-arrow" style="font-size: 2.5rem;">👈</span>
+        </div>
+    </section>
+
+    <!-- 🌸 Features Section -->
+    <section class="d-flex align-items-center bg-light rounded-1" style="height: 30vh; background: linear-gradient(to right, #a1c4fd, #c2e9fb);">
+        <div class="container">
+            <div class="row text-center">
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100 shadow-sm border-0">
+                        <div class="card-body">
+                            <h2 class="mb-2">📅</h2>
+                            <h4 class="fw-semibold mb-2">Easy Tracking</h4>
+                            <p class="fs-5">Log your periods with one click. Simple and quick!</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100 shadow-sm border-0">
+                        <div class="card-body">
+                            <h2 class="mb-2">🔔</h2>
+                            <h4 class="fw-semibold mb-2">Smart Reminders</h4>
+                            <p class="fs-5">Gentle reminders to stay informed and prepared.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100 shadow-sm border-0">
+                        <div class="card-body">
+                            <h2 class="mb-2">📈</h2>
+                            <h4 class="fw-semibold mb-2">Cycle Insights</h4>
+                            <p class="fs-5">Spot trends and patterns with beautiful visual summaries.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 🌼 Testimonial Section -->
+    <section class="d-flex align-items-center bg-white" style="height: 50vh;">
+        <div class="container text-center">
+            <blockquote class="blockquote">
+                <p class="fs-1 fst-italic mb-3">“This app helped me stay on top of my health without the stress.”</p>
+                <footer class="blockquote-footer fs-4">A happy user</footer>
+            </blockquote>
+        </div>
+    </section>
+
 </main>
+
+
 
 <!-- 
 TODO: 
 ***********************************************************************************
 Will add a React component here to display cycle data in a more interactive way.
 
-
 <div id="react-root"></div>
 <script src="~/js/bundle.js"></script>
 ***********************************************************************************
 -->
-
-
-

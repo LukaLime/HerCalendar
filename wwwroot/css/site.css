@@ -1,5 +1,6 @@
 html {
-  font-size: 14px;
+    font-size: 14px;
+    scroll-behavior: smooth;
 }
 
 @media (min-width: 768px) {
@@ -40,4 +41,37 @@ input:hover {
 input:focus {
     border-color: rgba(120, 194, 173, 1);
     box-shadow: 0 0 5px rgba(27, 110, 194, 0.5);
+}
+
+@keyframes bounce-right {
+    0%, 20%, 50%, 80%, 100% {
+        transform: translateX(0);
+    }
+
+    40% {
+        transform: translateX(8px);
+    }
+
+    60% {
+        transform: translateX(4px);
+    }
+}
+
+.animated-arrow {
+    font-size: 2rem;
+    display: inline-block;
+    animation: bounce-right 2s infinite;
+    color: #1b6ec2;
+    margin-right: 10px;
+}
+
+.background-calm {
+    background-image: url('/images/calendar_image.svg'); /* path to your image */
+
+    z-index: -1; /* behind all content */
+
+   
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
 }
