@@ -21,15 +21,15 @@ To Do Tasks:
 	2. Add Cycle Chart
 	3. Add AI chatbox to analyze the users current tracked cycles, and any other questions the user may have
 	4. Add General loading wheel for all pages
-	5. Update UI using React
+	5. Add Insights tab (Cycle Length Trends, Symptom Frequency, Mood Patterns,  Phase Highlights)
     6. Add an external login provider (Google, Facebook, etc.)
 	7. Enforce that UserId is always always points to a valid user in AspNetUsers
-	8. 
-	9. 
+	8. Add an About page with information about the project and its purpose
+	9. Add Resources page with links to relevant articles, studies, and resources on menstrual health
 	10. Implement Power BI dashboard for visualizing cycle data and trends
 	11. 
 	12. Implement donations (Patreon, or Buy Me a Coffee)
-	13. Add a blog section
+	13. Add a Journal section for personal notes and reflections on menstrual health
 	14. Buy a domain name
 	15. Add Google Analytics to track user activity
 	16. Add Google AdSense to monetize the website
