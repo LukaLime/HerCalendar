@@ -103,7 +103,7 @@ namespace HerCalendar.Controllers
         public async Task<IActionResult> IndexPartial()
         {
             _logger.LogInformation("IndexPartial called");
-            //await Task.Delay(20000); // simulate delay, good for loading MyCycles page
+            //await Task.Delay(10000); // simulate delay, good for loading MyCycles page
             var result = await RetryDbCallAsync(async () =>
             {
                 var (cycles, avg, estDate, daysUntil) = await GetCycleDataAsync();

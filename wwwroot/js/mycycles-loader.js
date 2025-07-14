@@ -1,6 +1,4 @@
-﻿
-
-// Stores the last URL used in fetchWithRetry so it can be retried if needed
+﻿// Stores the last URL used in fetchWithRetry so it can be retried if needed
 let lastUrl = "";
 
 // UI elements for displaying status and progress
@@ -11,7 +9,7 @@ const progressBar = document.getElementById("loader-progress-bar");
 // Timer/interval control variables
 let progressInterval = null;
 let messageInterval = null;
-let loaderTimer = null; 
+let loaderTimer = null;
 let loaderWasShown = false;
 
 // Shows the global loader overlay with progress bar and quirky messages
@@ -38,7 +36,7 @@ function showLoader() {
             const firstMessage = quirkyMessages[Math.floor(Math.random() * quirkyMessages.length)];
             message.textContent = firstMessage;
 
-            clearInterval(messageInterval); 
+            clearInterval(messageInterval);
             messageInterval = setInterval(() => {
                 const next = quirkyMessages[Math.floor(Math.random() * quirkyMessages.length)];
                 message.textContent = next;
@@ -65,7 +63,7 @@ function hideLoader() {
     if (loader && progressBar) {
         progressBar.style.width = "100%";
         clearInterval(progressInterval);
-        clearInterval(messageInterval); 
+        clearInterval(messageInterval);
 
         setTimeout(() => {
             loader.style.display = "none";
@@ -80,7 +78,7 @@ async function fetchWithRetry(url, retries = 2, delay = 3000) {
 
     loaderTimer = setTimeout(() => {
         loaderWasShown = true;
-        showLoader();  
+        showLoader();
     }, 1000); // 1 second delay before showing loader
 
     for (let attempt = 1; attempt <= retries; attempt++) {
@@ -112,15 +110,17 @@ async function fetchWithRetry(url, retries = 2, delay = 3000) {
                 }
 
             }
+            hideLoader();
 
             // Success — exit loop
-            break; 
+            break;
 
         } catch (err) {
             console.warn(`Attempt ${attempt} failed: ${err.message}`);
 
             if (statusText) {
                 statusText.innerText = `🔄 Failed to reach server... - Attempting to wake the server`;
+                clearInterval(messageInterval); // Stop quirky messages
             }
             if (progressBar) {
                 progressBar.classList.remove("bg-primary");
@@ -134,6 +134,7 @@ async function fetchWithRetry(url, retries = 2, delay = 3000) {
                 // Final failure after all retries
                 if (statusText) {
                     statusText.innerText = `❌ We couldn’t reach the server after several tries. Please refresh or try again.`;
+                    clearInterval(messageInterval); // Stop quirky messages
                 }
                 if (progressBar) {
                     progressBar.style.width = "100%";
@@ -149,17 +150,13 @@ async function fetchWithRetry(url, retries = 2, delay = 3000) {
                 }
                 // If loader hasn't shown yet, show it now for failure UI
                 if (!loaderWasShown) {
-                    showLoader(); 
+                    showLoader();
                 }
             }
         }
     }
     // Prevent loader from being shown too late
     clearTimeout(loaderTimer);
-
-    if (loaderWasShown) {
-        hideLoader(); // Hide loader if it was shown
-    }
 }
 
 // Retry the last failed fetch
@@ -175,7 +172,7 @@ function retryLastFetch() {
     if (progressBar) {
         progressBar.style.width = "0%";
         progressBar.classList.remove("bg-danger");
-        progressBar.classList.add("bg-primary");
+        progressBar.classList.add("bg-primary", "progress-bar-animated");
     }
 
     if (lastUrl) {
@@ -190,5 +187,6 @@ window.addEventListener('DOMContentLoaded', () => {
         fetchWithRetry('/MyCycles/IndexPartial', 2, 3000);
     }
 });
+
 
 
