@@ -81,7 +81,7 @@ async function fetchWithRetry(url, retries = 2, delay = 3000) {
     loaderTimer = setTimeout(() => {
         loaderWasShown = true;
         showLoader();  
-    }, 3000); // 3 second delay before showing loader
+    }, 1000); // 1 second delay before showing loader
 
     for (let attempt = 1; attempt <= retries; attempt++) {
         try {
