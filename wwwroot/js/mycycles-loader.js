@@ -10,6 +10,8 @@ window.addEventListener('DOMContentLoaded', () => {
 });
 
 let lastUrl = "";
+let progress = 0;
+let progressInterval = null;
 
 async function fetchWithRetry(url, retries = 2, delay = 3000) {
     lastUrl = url;
@@ -18,9 +20,10 @@ async function fetchWithRetry(url, retries = 2, delay = 3000) {
     const statusText = document.getElementById('loader-status');
     const retryBtn = document.getElementById('retry-btn-container');
 
-    //loader.style.display = "block";
-    //retryBtn.style.display = "none";
-    //statusText.innerText = "Fetching your data ⏳";
+    // Show loader
+    loader.classList.remove('d-none');
+    retryBtn.classList.add('d-none');
+    startSimulatedProgress();
 
     for (let attempt = 1; attempt <= retries; attempt++) {
         try {
@@ -45,7 +48,8 @@ async function fetchWithRetry(url, retries = 2, delay = 3000) {
                 document.querySelector("main").innerHTML = newMain.innerHTML;
             }
 
-            loader.style.display = "none";
+            finishProgress();
+            loader.classList.add('d-none'); // Hide loader
             return;
 
         } catch (err) {
@@ -56,16 +60,41 @@ async function fetchWithRetry(url, retries = 2, delay = 3000) {
                 statusText.innerText = `🔄 Attempt ${attempt}/${retries}${dots} - Waking the server`;
                 await new Promise(res => setTimeout(res, delay));
             } else {
+                finishProgress();
                 statusText.innerText = "❌ We couldn’t reach the server after several tries. Please refresh or try again.";
-                retryBtn.style.display = "block";
+                retryBtn.classList.remove('d-none');
             }
         }
     }
 }
 
-// Retry handler (called by Retry button)
 function retryLastFetch() {
     if (lastUrl) {
         fetchWithRetry(lastUrl, 2, 3000);
     }
+}
+
+function startSimulatedProgress() {
+    const progressBar = document.getElementById('loader-progress');
+    progress = 0;
+    progressBar.style.width = '0%';
+    progressBar.setAttribute('aria-valuenow', 0);
+
+    progressInterval = setInterval(() => {
+        if (progress < 95) {
+            progress += Math.random() * 5;
+            progressBar.style.width = `${progress}%`;
+            progressBar.setAttribute('aria-valuenow', Math.floor(progress));
+        } else {
+            clearInterval(progressInterval); // finish manually on success
+        }
+    }, 200);
+}
+
+function finishProgress() {
+    clearInterval(progressInterval);
+    const progressBar = document.getElementById('loader-progress');
+    progressBar.style.width = '100%';
+    progressBar.setAttribute('aria-valuenow', 100);
+    progress = 0;
 }
