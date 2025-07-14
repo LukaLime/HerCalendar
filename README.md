@@ -24,7 +24,7 @@ To Do Tasks:
 	5. Update UI using React
     6. Add an external login provider (Google, Facebook, etc.)
 	7. Enforce that UserId is always always points to a valid user in AspNetUsers
-	8. Create a smooth transition for every loading page
+	8. 
 	9. 
 	10. Implement Power BI dashboard for visualizing cycle data and trends
 	11. 
@@ -51,3 +51,4 @@ Completed Tasks:
 	7. Each user has there own account with there own cycle tracker
 	8. Add Admin account, and User account options
 	9. Each user should have there own account with there own cycle tracker
+	10. Created smooth transition for every loading page

@@ -58,25 +58,32 @@
         </div>
     </footer>
 
-    <div id="page-loader" class="d-none d-flex flex-column justify-content-center align-items-center text-center" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #f8f9fa; z-index: 9999;">
-        <div class="p-4 rounded shadow-sm bg-white" style="max-width: 500px; width: 90%;">
-            <h3 id="loader-status" class="mb-3 text-secondary">Welcome back! Just brewing up your cycle data... ⏳</h3>
-            <h5 class="mb-4 text-muted">☕ The server’s warming up its mug and getting things ready!</h5>
+    <!-- MyCycle Loading Overlay (shown during long fetches) -->
+    <div id="global-loader" class="loader-overlay">
+        <div class="loader-container">
 
-            <!-- Progress Bar -->
-            <div class="progress mb-3" style="height: 20px;">
-                <div id="loader-progress" class="progress-bar progress-bar-striped progress-bar-animated bg-secondary"
-                     role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+            <!-- Dynamic loading message -->
+            <div id="loading-message" class="loader-message"></div>
+
+            <!-- Progress bar -->
+            <div class="progress">
+                <div id="loader-progress-bar"
+                     class="progress-bar progress-bar-striped progress-bar-animated bg-primary"
+                     role="progressbar"
+                     style="width: 0%; height: 3rem;"
+                     aria-valuemin="0" aria-valuemax="100">
                 </div>
             </div>
 
-            <!-- Retry Button -->
-            <div id="retry-btn-container" class="d-none">
-                <button onclick="retryLastFetch()" class="btn btn-warning">Try Again 🔁</button>
-            </div>
+            <!-- Retry button (shown if fetch fails) -->
+            <button id="retryBtn" onclick="retryLastFetch()" class="btn btn-outline-danger retry-button">Try Again</button>
+
+            <!-- Spacer for layout breathing room -->
+            <br />   
+            <br />
+            <br />
         </div>
     </div>
-
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
