@@ -9,8 +9,8 @@ const progressBar = document.getElementById("loader-progress-bar");
 // Timer/interval control variables
 let progressInterval = null;
 let messageInterval = null;
-let loaderTimer = null;
-let loaderWasShown = false;
+//let loaderTimer = null;
+//let loaderWasShown = false;
 
 // Shows the global loader overlay with progress bar and quirky messages
 function showLoader() {
@@ -75,11 +75,13 @@ function hideLoader() {
 async function fetchWithRetry(url, retries = 2, delay = 3000) {
     lastUrl = url;
     loaderWasShown = false;
-
+    /*
     loaderTimer = setTimeout(() => {
         loaderWasShown = true;
         showLoader();
     }, 1000); // 1 second delay before showing loader
+    */
+    showLoader(); 
 
     for (let attempt = 1; attempt <= retries; attempt++) {
         try {
@@ -113,7 +115,8 @@ async function fetchWithRetry(url, retries = 2, delay = 3000) {
             hideLoader();
 
             // Success — exit loop
-            break;
+            //break;
+            return;
 
         } catch (err) {
             console.warn(`Attempt ${attempt} failed: ${err.message}`);
@@ -149,14 +152,14 @@ async function fetchWithRetry(url, retries = 2, delay = 3000) {
                     retryBtn.style.display = "inline-block";
                 }
                 // If loader hasn't shown yet, show it now for failure UI
-                if (!loaderWasShown) {
+                /*if (!loaderWasShown) {
                     showLoader();
-                }
+                }*/
             }
         }
     }
     // Prevent loader from being shown too late
-    clearTimeout(loaderTimer);
+    //clearTimeout(loaderTimer);
 }
 
 // Retry the last failed fetch
@@ -180,13 +183,25 @@ function retryLastFetch() {
     }
 }
 
-// Automatically start fetching when landing on MyCycles page
+// 🌐 Global loader trigger on all pages
 window.addEventListener('DOMContentLoaded', () => {
     const path = window.location.pathname.toLowerCase();
+
     if (path === '/mycycles' || path === '/mycycles/index') {
         fetchWithRetry('/MyCycles/IndexPartial', 2, 3000);
     }
+    loaderWasShown = false; // Reset flag
+    // Start the loader with delay (to avoid flashing for fast loads)
+    loaderTimer = setTimeout(() => {
+        loaderWasShown = true;
+        showLoader();
+    }, 1000); // Show after 1s if load isn't done
+
+    // Hide loader once page is fully rendered
+    window.addEventListener('load', () => {
+        clearTimeout(loaderTimer);
+        if (loaderWasShown) {
+            hideLoader();
+        }
+    });
 });
-
-
-
