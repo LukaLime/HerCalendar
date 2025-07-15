@@ -16,7 +16,7 @@ the estimated date. With a clean, responsive interface styled using Bootstrap, H
 users to monitor their reproductive health.
 
 
-To Do Tasks:
+### To Do Tasks:
 	1. Add Ovulation periods
 	2. Add Cycle Chart
 	3. Add AI chatbox to analyze the users current tracked cycles, and any other questions the user may have
@@ -27,7 +27,7 @@ To Do Tasks:
 	8. Add an About page with information about the project and its purpose
 	9. Add Resources page with links to relevant articles, studies, and resources on menstrual health
 	10. Implement Power BI dashboard for visualizing cycle data and trends
-	11. 
+	11. Add a cookie consent banner for GDPR compliance
 	12. Implement donations (Patreon, or Buy Me a Coffee)
 	13. Add a Journal section for personal notes and reflections on menstrual health
 	14. Buy a domain name
@@ -35,13 +35,13 @@ To Do Tasks:
 	16. Add Google AdSense to monetize the website
 
 
-Email Authorization and other Implmentations (can only be implmented with a new domain, and upgrades Azure account):
+### Email Authorization and other Implmentations (can only be implmented with a new domain, and upgrades Azure account):
 	1. Users are able to subscribe through email, users will get email reminders when an upcoming Cycle is coming up
 	2. Add email confirmation when registering a new account
 	3. Email news letter for users to subscribe to
 
 
-Completed Tasks:
+### Completed Tasks:
 	1. Fix Days to next period, and estimated period so it estimates from the last period date using the average cycle length
 	2. Add Period Start Date and End Date instead of inputing Cycle Length
 	3. Cycle start days, and next period start days should count towards cycle length
