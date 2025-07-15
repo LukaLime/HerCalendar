@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="~/HerCalendar.styles.css" asp-append-version="true" />
     <link rel="icon" type="image/x-icon" href="~/favicon.ico" asp-append-version="true" />
     <link rel="apple-touch-icon" href="~/apple-touch-icon.png" asp-append-version="true" />
+    <script src="~/js/mycycles-loader.js" defer asp-append-version="true"></script>
 </head>
 <body>
     <header>
@@ -46,18 +47,6 @@
             </div>
         </nav>
     </header>
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
-    </div>
-
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2025 - HerCalendar - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-        </div>
-    </footer>
-
     <!-- MyCycle Loading Overlay (shown during long fetches) -->
     <div id="global-loader" class="loader-overlay">
         <div class="loader-container">
@@ -84,12 +73,23 @@
             <br />
         </div>
     </div>
+    <div class="container">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer class="border-top footer text-muted">
+        <div class="container">
+            &copy; 2025 - HerCalendar - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+        </div>
+    </footer>
+
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
-    <script src="~/js/mycycles-loader.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

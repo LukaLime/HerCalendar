@@ -1,4 +1,15 @@
-﻿// Stores the last URL used in fetchWithRetry so it can be retried if needed
+﻿
+// Loader Overlay trigger on user's MyCycles path
+window.addEventListener('DOMContentLoaded', () => {
+    const path = window.location.pathname.toLowerCase();
+
+    if (path === '/mycycles' || path === '/mycycles/index') {
+        //showLoader();
+        fetchWithRetry('/MyCycles/IndexPartial', 2, 3000);
+    }
+});
+
+// Stores the last URL used in fetchWithRetry so it can be retried if needed
 let lastUrl = "";
 
 // UI elements for displaying status and progress
@@ -15,6 +26,7 @@ let messageInterval = null;
 // Shows the global loader overlay with progress bar and quirky messages
 function showLoader() {
     const loader = document.getElementById("global-loader");
+    console.log("[Loader] Showing loader overlay");
     const progressBar = document.getElementById("loader-progress-bar");
     const message = document.getElementById("loading-message");
 
@@ -58,6 +70,7 @@ function showLoader() {
 // Hides the global loader and resets the intervals
 function hideLoader() {
     const loader = document.getElementById("global-loader");
+    console.log("[Loader] Hiding loader overlay");
     const progressBar = document.getElementById("loader-progress-bar");
 
     if (loader && progressBar) {
@@ -74,7 +87,7 @@ function hideLoader() {
 // Fetch a URL with automatic retry logic and loader management
 async function fetchWithRetry(url, retries = 2, delay = 3000) {
     lastUrl = url;
-    loaderWasShown = false;
+    //loaderWasShown = false;
     /*
     loaderTimer = setTimeout(() => {
         loaderWasShown = true;
@@ -92,14 +105,19 @@ async function fetchWithRetry(url, retries = 2, delay = 3000) {
             if (response.status === 503) throw new Error("503 Service Unavailable");
             if (!response.ok) throw new Error(`Status: ${response.status}`);
 
-            // Replace main content with response HTML
+            // Replace content with response HTML
             const html = await response.text();
+            console.log("[Loader] Fetched HTML:", html);
+
             const parser = new DOMParser();
             const doc = parser.parseFromString(html, "text/html");
-            const newMain = doc.querySelector("main");
+            const partialHTML = doc.body.innerHTML;
+            console.log("[Loader] partial HTML found?", !!partialHTML);
+            const container = document.getElementById("cycle-content");   
 
-            if (newMain) {
-                document.querySelector("main").innerHTML = newMain.innerHTML;
+            if (container) {
+                container.innerHTML = partialHTML;
+                console.log("[Loader] cycle-content replaced successfully");
 
                 // // Reset progress bar and status on success
                 if (progressBar) {
@@ -111,6 +129,8 @@ async function fetchWithRetry(url, retries = 2, delay = 3000) {
                     statusText.innerText = defaultMessage;
                 }
 
+            } else {
+                console.log("[Loader] cycle-content element not found in the document. Cannot replace content.");
             }
             hideLoader();
 
@@ -183,25 +203,3 @@ function retryLastFetch() {
     }
 }
 
-// 🌐 Global loader trigger on all pages
-window.addEventListener('DOMContentLoaded', () => {
-    const path = window.location.pathname.toLowerCase();
-
-    if (path === '/mycycles' || path === '/mycycles/index') {
-        fetchWithRetry('/MyCycles/IndexPartial', 2, 3000);
-    }
-    loaderWasShown = false; // Reset flag
-    // Start the loader with delay (to avoid flashing for fast loads)
-    loaderTimer = setTimeout(() => {
-        loaderWasShown = true;
-        showLoader();
-    }, 1000); // Show after 1s if load isn't done
-
-    // Hide loader once page is fully rendered
-    window.addEventListener('load', () => {
-        clearTimeout(loaderTimer);
-        if (loaderWasShown) {
-            hideLoader();
-        }
-    });
-});
