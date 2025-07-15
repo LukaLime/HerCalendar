@@ -113,7 +113,7 @@ namespace HerCalendar.Controllers
                 ViewBag.DaysUntilNextPeriod = daysUntil;
 
                 _logger.LogInformation("DB call successful");
-                return PartialView("Index", cycles);
+                return PartialView("_IndexPartial", cycles);
             });
 
             if (result == null)
