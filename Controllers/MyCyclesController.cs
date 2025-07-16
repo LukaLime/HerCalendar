@@ -121,7 +121,7 @@ namespace HerCalendar.Controllers
                 _logger.LogWarning("Returning 503 due to repeated DB failures");
                 return StatusCode(503, "Database unavailable after multiple attempts.");
             }
-
+  
             return result;
             //return StatusCode(503); // For testing purposes, return a 503 Service Unavailable status code
         }

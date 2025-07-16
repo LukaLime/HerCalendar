@@ -5,7 +5,8 @@ window.addEventListener('DOMContentLoaded', () => {
 
     if (triggerExists) {
         console.log("[Loader] Detected MyCycles loader trigger");
-        fetchWithRetry('/MyCycles/IndexPartial', 2, 3000);
+        let message = showLoader();
+        fetchWithRetry('/MyCycles/IndexPartial', 2, 3000, message);
     }
 });
 
@@ -37,6 +38,8 @@ function showLoader() {
         "🔄 Loading... pulling data from the magic hat 🎩"
     ];
 
+    let firstMessage = "";
+
     if (loader && progressBar) {
         loader.style.display = "flex";
         progressBar.style.width = "0%";
@@ -44,7 +47,7 @@ function showLoader() {
 
         // Display an initial quirky message and begin rotating them every 10 seconds
         if (message) {
-            const firstMessage = quirkyMessages[Math.floor(Math.random() * quirkyMessages.length)];
+            firstMessage = quirkyMessages[Math.floor(Math.random() * quirkyMessages.length)];
             message.textContent = firstMessage;
 
             clearInterval(messageInterval);
@@ -63,6 +66,7 @@ function showLoader() {
             }
         }, 50);
     }
+    return firstMessage;
 }
 
 
@@ -84,10 +88,10 @@ function hideLoader() {
 }
 
 // Fetch a URL with automatic retry logic and loader management
-async function fetchWithRetry(url, retries = 2, delay = 3000) {
+async function fetchWithRetry(url, retries = 2, delay = 3000, message) {
     lastUrl = url;
 
-    showLoader(); 
+    //showLoader(); 
 
     for (let attempt = 1; attempt <= retries; attempt++) {
         try {
@@ -124,8 +128,8 @@ async function fetchWithRetry(url, retries = 2, delay = 3000) {
                     progressBar.classList.add("bg-primary", "progress-bar-animated");
                 }
 
-                if (statusText) {
-                    statusText.innerText = defaultMessage;
+                if (statusText && message) {
+                    statusText.innerText = message;
                 }
 
             } else {
@@ -178,10 +182,6 @@ async function fetchWithRetry(url, retries = 2, delay = 3000) {
 function retryLastFetch() {
     const retryBtn = document.getElementById("retryBtn");
 
-    if (statusText) {
-        statusText.innerText = defaultMessage;
-    }
-
     if (retryBtn) retryBtn.style.display = "none";
 
     if (progressBar) {
@@ -189,9 +189,10 @@ function retryLastFetch() {
         progressBar.classList.remove("bg-danger");
         progressBar.classList.add("bg-primary", "progress-bar-animated");
     }
+    const currentMessage = statusText ? statusText.innerText : "";
 
     if (lastUrl) {
-        fetchWithRetry(lastUrl, 2, 3000);
+        fetchWithRetry(lastUrl, 2, 3000, currentMessage);
     }
 }
 

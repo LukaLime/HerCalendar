@@ -44,28 +44,8 @@ namespace HerCalendar
             builder.Services.ConfigureApplicationCookie(options =>
             {
                 options.LoginPath = "/Identity/Account/Login";
-                options.AccessDeniedPath = "/Identity/Account/AccessDenied";
-                options.ReturnUrlParameter = "returnUrl";
-
-                options.Events.OnRedirectToReturnUrl = context =>
-                {
-                    var returnUrl = context.Request.Query["returnUrl"].ToString();
-                    Console.WriteLine($"🔁 OnRedirectToReturnUrl triggered with returnUrl: {returnUrl}");
-
-                    if (returnUrl.Contains("/MyCycles"))
-                    {
-                        Console.WriteLine("➡️ Redirecting to Loader instead of directly to /MyCycles");
-                        context.Response.Redirect("/MyCycles/Loader");
-                        return Task.CompletedTask;
-                    }
-
-                    Console.WriteLine("➡️ Redirecting to default return URL");
-                    context.Response.Redirect(context.RedirectUri);
-                    return Task.CompletedTask;
-                };
+                options.AccessDeniedPath = "/Identity/Account/AccessDenied"; // Optional: where to redirect if user lacks access
             });
-
-
 
             builder.Services.AddControllersWithViews();
 

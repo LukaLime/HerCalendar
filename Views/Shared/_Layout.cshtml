@@ -15,6 +15,7 @@
 </head>
 <body>
     <header>
+        <!-- Navigation bar with Bootstrap styling -->
         <nav class="navbar navbar-expand-lg bg-primary" data-bs-theme="dark">
             <div class="container-fluid">
                 <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">HerCalendar</a>
@@ -47,6 +48,7 @@
             </div>
         </nav>
     </header>
+
     <!-- MyCycle Loading Overlay (shown during long fetches) -->
     <div id="global-loader" class="loader-overlay">
         <div class="loader-container">
@@ -74,6 +76,7 @@
         </div>
     </div>
     
+    <!-- Main Content -->
     <div class="container">
         <main role="main" class="pb-3">
             @RenderBody()
@@ -81,6 +84,7 @@
     </div>
 
     <footer class="border-top footer text-muted">
+        <!-- Footer content with Bootstrap styling -->
         <div class="container">
             &copy; 2025 - HerCalendar - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
