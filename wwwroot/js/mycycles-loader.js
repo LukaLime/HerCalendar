@@ -1,13 +1,14 @@
 ﻿
 // Loader Overlay trigger on user's MyCycles path
 window.addEventListener('DOMContentLoaded', () => {
-    const path = window.location.pathname.toLowerCase();
+    const triggerExists = document.getElementById("mycycles-loader-init");
 
-    if (path === '/mycycles' || path === '/mycycles/index') {
-        //showLoader();
+    if (triggerExists) {
+        console.log("[Loader] Detected MyCycles loader trigger");
         fetchWithRetry('/MyCycles/IndexPartial', 2, 3000);
     }
 });
+
 
 // Stores the last URL used in fetchWithRetry so it can be retried if needed
 let lastUrl = "";
@@ -20,8 +21,6 @@ const progressBar = document.getElementById("loader-progress-bar");
 // Timer/interval control variables
 let progressInterval = null;
 let messageInterval = null;
-//let loaderTimer = null;
-//let loaderWasShown = false;
 
 // Shows the global loader overlay with progress bar and quirky messages
 function showLoader() {
@@ -87,13 +86,7 @@ function hideLoader() {
 // Fetch a URL with automatic retry logic and loader management
 async function fetchWithRetry(url, retries = 2, delay = 3000) {
     lastUrl = url;
-    //loaderWasShown = false;
-    /*
-    loaderTimer = setTimeout(() => {
-        loaderWasShown = true;
-        showLoader();
-    }, 1000); // 1 second delay before showing loader
-    */
+
     showLoader(); 
 
     for (let attempt = 1; attempt <= retries; attempt++) {
@@ -107,7 +100,7 @@ async function fetchWithRetry(url, retries = 2, delay = 3000) {
 
             // Replace content with response HTML
             const html = await response.text();
-            console.log("[Loader] Fetched HTML:", html);
+            //console.log("[Loader] Fetched HTML:", html);
 
             const parser = new DOMParser();
             const doc = parser.parseFromString(html, "text/html");
@@ -119,7 +112,13 @@ async function fetchWithRetry(url, retries = 2, delay = 3000) {
                 container.innerHTML = partialHTML;
                 console.log("[Loader] cycle-content replaced successfully");
 
-                // // Reset progress bar and status on success
+                // Update the URL in the browser without page reload
+                history.replaceState(null, "", "/MyCycles");
+
+                // Update browser tab title
+                document.title = "My Cycles - HerCalendar";
+
+                // Reset progress bar and status on success
                 if (progressBar) {
                     progressBar.classList.remove("bg-danger", "bg-warning");
                     progressBar.classList.add("bg-primary", "progress-bar-animated");
@@ -135,7 +134,6 @@ async function fetchWithRetry(url, retries = 2, delay = 3000) {
             hideLoader();
 
             // Success — exit loop
-            //break;
             return;
 
         } catch (err) {
@@ -171,15 +169,9 @@ async function fetchWithRetry(url, retries = 2, delay = 3000) {
                 if (retryBtn) {
                     retryBtn.style.display = "inline-block";
                 }
-                // If loader hasn't shown yet, show it now for failure UI
-                /*if (!loaderWasShown) {
-                    showLoader();
-                }*/
             }
         }
     }
-    // Prevent loader from being shown too late
-    //clearTimeout(loaderTimer);
 }
 
 // Retry the last failed fetch

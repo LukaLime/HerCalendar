@@ -126,6 +126,12 @@ namespace HerCalendar.Controllers
             //return StatusCode(503); // For testing purposes, return a 503 Service Unavailable status code
         }
 
+        // GET: MyCycles/Loader/5
+        public IActionResult Loader()
+        {
+            return View();
+        }
+
 
         // GET: MyCycles/Details/5
         public async Task<IActionResult> Details(int? id)
