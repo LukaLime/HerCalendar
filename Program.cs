@@ -47,6 +47,17 @@ namespace HerCalendar
                 options.AccessDeniedPath = "/Identity/Account/AccessDenied"; // Optional: where to redirect if user lacks access
             });
 
+            // Google Authentication configuration
+            builder.Services.AddAuthentication()
+                .AddGoogle(options =>
+                {
+                    options.ClientId = builder.Configuration["Authentication:Google:ClientId"]
+                        ?? throw new InvalidOperationException("Google ClientId is not configured.");
+                    options.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"]
+                        ?? throw new InvalidOperationException("Google ClientSecret is not configured.");
+                });
+
+
             builder.Services.AddControllersWithViews();
 
             var app = builder.Build();

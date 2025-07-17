@@ -5,12 +5,71 @@
     ViewData["Title"] = "Log in";
 }
 
+<style>
+    .loader-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(255, 255, 255, 0.85);
+        z-index: 9999;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .loader-container {
+        width: 50%;
+        text-align: center;
+    }
+
+    .loader-message {
+        font-size: 1.45rem;
+        font-weight: 500;
+        margin-bottom: 1rem;
+        color: #333;
+    }
+
+    .retry-button {
+        margin-top: 1rem;
+        display: none;
+        font-size: 1rem;
+    }
+</style>
+
 <h1 class="mt-4">@ViewData["Title"]</h1>
+<!-- MyCycle Loading Overlay (shown during long fetches) -->
+<div id="global-loader" class="loader-overlay">
+    <div class="loader-container">
+
+        <!-- Dynamic loading message -->
+        <div id="loading-message" class="loader-message"></div>
+
+        <!-- Progress bar -->
+        <div class="progress">
+            <div id="loader-progress-bar"
+                 class="progress-bar progress-bar-striped progress-bar-animated bg-primary"
+                 role="progressbar"
+                 style="width: 0%; height: 3rem;"
+                 aria-valuemin="0" aria-valuemax="100">
+            </div>
+        </div>
+
+        <!-- Retry button (shown if fetch fails) -->
+        <button id="retryBtn" onclick="retryLastFetch()" class="btn btn-outline-danger retry-button">Try Again</button>
+
+        <!-- Spacer for layout breathing room -->
+        <br />
+        <br />
+        <br />
+    </div>
+</div>
+
 <div class="row">
     <div class="col-md-4">
         <section>
             <form id="account" method="post">
-                <hr />
                 <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
                 <div class="form-floating mb-3">
                     <input asp-for="Input.Email" class="form-control" autocomplete="username" aria-required="true" placeholder="name@example.com" />
@@ -52,6 +111,14 @@
         <section>
             <h3>Use another service to log in.</h3>
             <hr />
+            <div>
+                <p>
+                    <a asp-page="./ExternalLogin" asp-route-provider="Google" asp-route-returnUrl="@Model.ReturnUrl">
+                       
+                    </a>
+                </p>
+            </div>
+
             @{
                 if ((Model.ExternalLogins?.Count ?? 0) == 0)
                 {
@@ -83,22 +150,37 @@
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
 
-        <script>
+    <script>
         document.addEventListener('DOMContentLoaded', () => {
             const loginForm = document.getElementById('account');
+
             if (loginForm) {
                 loginForm.addEventListener('submit', () => {
-                    const loader = document.getElementById('page-loader');
-                    const statusText = document.getElementById('loader-status');
-                    const retryBtn = document.getElementById('retry-btn-container');
+                const loader = document.getElementById('global-loader');
+                const statusText = document.getElementById('loading-message');
+                const progressBar = document.getElementById('loader-progress-bar');
+                const retryBtn = document.getElementById('retryBtn');
 
-                    if (loader && statusText && retryBtn) {
-                        
+
+                    if (loader && statusText && retryBtn && progressBar) {
                         retryBtn.style.display = "none";
-                        loader.style.display = "block";
+                        statusText.textContent = "Logging you in... please wait";
+                        loader.style.display = "flex";
+
+                        // Simulate progress bar
+                        let progress = 0;
+                        const interval = setInterval(() => {
+                            if (progress < 90) {
+                                progress++;
+                                progressBar.style.width = progress + "%";
+                            } else {
+                                clearInterval(interval);
+                            }
+                        }, 40);
                     }
                 });
             }
         });
     </script>
 }
+

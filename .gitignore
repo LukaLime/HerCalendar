@@ -57,6 +57,7 @@ publish/
 *.publishsettings
 
 # User secrets
+appsettings.Development.json
 secrets.json
 
 # OS generated files
