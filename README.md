@@ -52,3 +52,7 @@ users to monitor their reproductive health.
 	8. Add Admin account, and User account options
 	9. Each user should have there own account with there own cycle tracker
 	10. Created smooth transition for every loading page
+
+
+## If Azure db runs out of memory
+	1. Make sure to restart the Azure app service once a month to clear the memory
