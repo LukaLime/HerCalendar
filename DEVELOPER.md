@@ -14,7 +14,7 @@ which allows object-relational mapping without writing raw SQL. Styling is handl
 
  -> ASP.NET SDK (for framework and libraries)
  -> Visual Studio or VS Code
- -> SQLite (for database)
+ -> Azure Cloud DB (for database)
  -> SQLiteStudio (for database inspection)
  -> npm (for managing JavaScript packages)
 
@@ -115,5 +115,4 @@ You use the "Admin" role via [Authorize(Roles = "Admin")]
  1. ASP.NET Core Docs: https://learn.microsoft.com/en-us/aspnet/core/
  2. EF Core Docs: https://learn.microsoft.com/en-us/ef/core/
  3. Bootstrap Docs: https://getbootstrap.com/
- 4. SQLite Docs: https://www.sqlite.org/docs.html
- 5. SQLiteStudio: https://sqlitestudio.pl/
+

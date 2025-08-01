@@ -9,7 +9,7 @@ the software, see ARCHITECTURE.md.
 
 ## About 
 HerCalendar is a web-based menstrual cycle tracking application designed to help users log, view, and predict their menstrual cycles.
-Built using ASP.NET Core MVC, Razor Pages, and Entity Framework Core with a SQLite database, the app allows users to input and edit 
+Built using ASP.NET Core MVC, Razor Pages, and Entity Framework Core with a Azure Cloud database, the app allows users to input and edit 
 period start dates, automatically calculates cycle lengths, and displays a history of previous cycles in a clear table format. 
 It also computes the average cycle length and predicts the next period start date, along with the number of days remaining until 
 the estimated date. With a clean, responsive interface styled using Bootstrap, HerCalendar offers a simple and effective way for 
