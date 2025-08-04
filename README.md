@@ -33,12 +33,16 @@ users to monitor their reproductive health.
 	14. Buy a domain name
 	15. Add Google Analytics to track user activity
 	16. Add Google AdSense to monetize the website
+	17. Add Two-Factor Authentication (2FA) for enhanced security
+	18. Implement a password reset feature for users who forget their passwords
+	19. Add a feature to export cycle data to CSV or Excel format
+	20. Combine the loading progress bar mycylces-loader.js file, with the loading script in Areas/Identity/Pages/Account/Login.cshtml script section
 
 
 ### Email Authorization and other Implmentations (can only be implmented with a new domain, and upgrades Azure account):
 	1. Users are able to subscribe through email, users will get email reminders when an upcoming Cycle is coming up
 	2. Add email confirmation when registering a new account
-	3. Email news letter for users to subscribe to
+	3. Verify email address of user account settings
 
 
 ### Completed Tasks:

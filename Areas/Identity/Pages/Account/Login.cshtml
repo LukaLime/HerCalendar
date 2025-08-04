@@ -150,37 +150,43 @@
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
 
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const loginForm = document.getElementById('account');
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {
+                const loginForm = document.getElementById('account');
 
-            if (loginForm) {
-                loginForm.addEventListener('submit', () => {
-                const loader = document.getElementById('global-loader');
-                const statusText = document.getElementById('loading-message');
-                const progressBar = document.getElementById('loader-progress-bar');
-                const retryBtn = document.getElementById('retryBtn');
+                if (loginForm) {
+                    loginForm.addEventListener('submit', (e) => {
+                        const loader = document.getElementById('global-loader');
+                        const statusText = document.getElementById('loading-message');
+                        const progressBar = document.getElementById('loader-progress-bar');
+                        const retryBtn = document.getElementById('retryBtn');
 
+                        if (loader && statusText && retryBtn && progressBar) {
+                            e.preventDefault(); // prevent immediate submission
+                            retryBtn.style.display = "none";
+                            statusText.textContent = "Waking up the server elves... please wait 🧝";
+                            loader.style.display = "flex";
 
-                    if (loader && statusText && retryBtn && progressBar) {
-                        retryBtn.style.display = "none";
-                        statusText.textContent = "Logging you in... please wait";
-                        loader.style.display = "flex";
+                            // Simulate progress bar
+                            let progress = 0;
+                            const interval = setInterval(() => {
+                                if (progress < 90) {
+                                    progress++;
+                                    progressBar.style.width = progress + "%";
+                                } else {
+                                    clearInterval(interval);
 
-                        // Simulate progress bar
-                        let progress = 0;
-                        const interval = setInterval(() => {
-                            if (progress < 90) {
-                                progress++;
-                                progressBar.style.width = progress + "%";
-                            } else {
-                                clearInterval(interval);
-                            }
-                        }, 40);
-                    }
-                });
-            }
-        });
+                                    // Finish bar and submit after short delay
+                                    progressBar.style.width = "100%";
+                                    setTimeout(() => {
+                                        loginForm.submit();
+                                    }, 300); // optional: delay before actually submitting
+                                }
+                            }, 40);
+                        }
+                    });
+                }
+            });
     </script>
 }
 
