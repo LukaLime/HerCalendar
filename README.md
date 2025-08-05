@@ -20,7 +20,7 @@ users to monitor their reproductive health.
 	1. Add Ovulation periods
 	2. Add Cycle Chart
 	3. Add AI chatbox to analyze the users current tracked cycles, and any other questions the user may have
-	4. Add General loading wheel for all pages
+	4. Improve mobile responsiveness and user interface for better usability on smaller screens for the My Cycle page
 	5. Add Insights tab (Cycle Length Trends, Symptom Frequency, Mood Patterns,  Phase Highlights)
     6. Add an external login provider (Google, Facebook, etc.)
 	7. Enforce that UserId is always always points to a valid user in AspNetUsers
@@ -56,4 +56,5 @@ users to monitor their reproductive health.
 	8. Add Admin account, and User account options
 	9. Each user should have there own account with there own cycle tracker
 	10. Created smooth transition for every loading page
+	11. Improved mobile responsiveness and user interface for better usability on smaller screens for the home page
 
